@@ -5,7 +5,7 @@ import tw from "twin.macro";
 import MclarenCarImg from "../../../assets/images/mclaren-orange-big.png";
 import BlobImg from "../../../assets/images/blob.svg";
 import { SCREENS } from "../../components/responsive";
-
+import { Button } from "../../components/button";
 
 const TopSectionContainer = styled.div`
   min-height: 400px;
@@ -153,22 +153,23 @@ export function TopSection() {
   return (
     <TopSectionContainer>
       <LeftContainer>
-        <Slogan>Rent The Best Quality Car's With Us</Slogan>
+        <Slogan>Rent The Best Qulity Car's With Us</Slogan>
         <Description>
           Always choose the best car from our local stores or order it remotely
           at the best price for you and get the best quality cars for as long as
           you like
         </Description>
         <ButtonsContainer>
-
+          <Button theme="outlined" text="Book Your Ride" />
+          <Button theme="filled" text="Sell Your Car" />
         </ButtonsContainer>
       </LeftContainer>
       <RightContainer>
         <BlobContainer>
-          <img src={BlobImg} alt="Blob" />
+          <img src={BlobImg} />
         </BlobContainer>
         <StandaloneCar>
-          <img src={MclarenCarImg} alt="mclaren car" />
+          <img src={MclarenCarImg} />
         </StandaloneCar>
       </RightContainer>
     </TopSectionContainer>
