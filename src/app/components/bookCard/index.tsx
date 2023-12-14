@@ -5,7 +5,8 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { Marginer } from "../marginer";
 import { Button } from "../button";
-
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css'
 const CardContainer = styled.div`
 min-height: 4.3em;
 box-shadow: 0 1.3px 12px -3px rgba(0,0,0,0.4);
@@ -23,7 +24,7 @@ box-shadow: 0 1.3px 12px -3px rgba(0,0,0,0.4);
  `  
  
  const ItemContainer = styled.div`
-   ${tw`flex`}
+   ${tw`flex relative`}
  `
 
 const Icon = styled.span`
@@ -45,6 +46,8 @@ ${tw`
 `}
 `
 
+
+
 const LineSeperator = styled.span`
     width: 2px;
     height: 45%;
@@ -55,6 +58,13 @@ const LineSeperator = styled.span`
 
     `}
 `
+const DateCalendar = styled(Calendar)`
+position: absolute;
+max-width: none;
+top: 3.5em;
+left: -2em;
+`
+
 export function BookCard() {
  return <CardContainer>
     <ItemContainer>
@@ -64,6 +74,7 @@ export function BookCard() {
         <Name>
             Pick up date
         </Name>
+        <DateCalendar/>
     </ItemContainer>
     <LineSeperator/>
     <ItemContainer>
