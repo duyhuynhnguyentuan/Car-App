@@ -22,6 +22,7 @@ const AboutUsContainer = styled.div`
   `};
 `;
 
+
 const CarContainer = styled.div`
   width: auto;
   height: 15em;
