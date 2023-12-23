@@ -27,6 +27,7 @@ const CardContainer = styled.div`
     pb-1
     pr-2
     pl-2
+
     md:pt-2
     md:pb-2
     md:pl-9

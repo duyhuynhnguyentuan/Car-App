@@ -22,12 +22,15 @@ import {
       flex-col
       items-center
       p-3
-      pb-4
+      pb-4 
+      mb-8
+      sm:mb-8
+      md:mb-10
       bg-white
       rounded-md
       m-1
-      sm:m-3
-      md:m-6
+      
+    
     `};
   `;
   
