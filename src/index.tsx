@@ -8,6 +8,9 @@ import './index.css';
 import { ApolloProvider } from '@apollo/client';
 import { apolloClient } from './app/graphql';
 
+// const express = require('express');
+// const cors = require('cors');
+// const app=  express().use('*', cors());
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 

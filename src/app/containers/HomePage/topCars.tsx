@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro"; 
 import { Car } from "../../components/car";
@@ -9,6 +9,7 @@ import 'swiper/css/navigation';
 
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import carService from "../../services/carService";
 const TopCarsContainer = styled.div`
 ${tw`
 max-w-screen-lg
@@ -49,6 +50,15 @@ ${tw`
 
 
 export function TopCars(){
+  const fetchCars = async () => {
+    const cars = await carService.getCars().catch((err) => {
+      console.log(err);
+    });
+    console.log("Cars", cars)
+  }
+  useEffect(() => {
+    fetchCars()
+  }, [])
   const testCar: ICar = {
     name: "Audi S3 Car",
     mileage: "10k",
