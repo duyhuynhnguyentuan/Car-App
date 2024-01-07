@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro"; 
 import { Car } from "../../components/car";
@@ -15,6 +15,7 @@ import { GetCars_cars } from "../../services/carService/__generated__/GetCars";
 import { setTopCars} from "./slice";
 import { useDispatch, useSelector } from "react-redux";
 import { makeSelectTopCars } from "./selectors";
+import HashLoader from "react-spinners/HashLoader";
 const TopCarsContainer = styled.div`
 ${tw`
 max-w-screen-lg
@@ -61,6 +62,18 @@ const EmptyCars = styled.div`
   `};
 `;
 
+const LoadingContainer = styled.div`
+  ${tw`
+    w-full
+    mt-10
+    flex
+    justify-center
+    items-center
+    text-base
+    text-black
+  `};
+`;
+
 const actionDispatch = (dispatch: Dispatch) => ({
   setTopCars: (cars: GetCars_cars[]) => dispatch(setTopCars(cars)),
 })
@@ -68,16 +81,23 @@ const actionDispatch = (dispatch: Dispatch) => ({
 const stateSelector = createSelector(makeSelectTopCars, (topCars) => ({
   topCars 
 }))
+
+const wait = (timeout: number) => new Promise((rs) => setTimeout(rs, timeout));
 export function TopCars(){
+  const [isLoading, setisLoading] = useState(false) 
   const {setTopCars} = actionDispatch(useDispatch())
   const {topCars} = useSelector(stateSelector)
   //fetch cars from graphql calls
   const fetchCars = async () => {
+    setisLoading(true);
     const cars = await carService.getCars().catch((err) => {
-      console.log(err);
+      console.log("Error: ", err);
     });
-    console.log("Cars", cars)
-    if(cars) setTopCars(cars)
+    await wait(4000)
+
+    console.log("Cars: ", cars);
+    if (cars) setTopCars(cars);
+    setisLoading(false);
   }
   useEffect(() => {
     fetchCars()
@@ -115,20 +135,21 @@ export function TopCars(){
   const isEmptyTopCars = !topCars || topCars.length === 0
   let carSlides: JSX.Element[] = []; // Define carSlides before the if block
 
-if (!isEmptyTopCars) {
+
   const cars = topCars;
   carSlides = cars.map((car) => (
     <SwiperSlide><Car {...car} /></SwiperSlide>
   ));
-}else{
-  return null;
-}
+
 
   // const cars = !isEmptyTopCars && topCars.map((car)=> <Car{...car}/>)
   return <TopCarsContainer>
         <Title>Explore our top deals</Title>
-        {isEmptyTopCars && <EmptyCars>No car to show!</EmptyCars>}
-        {!isEmptyTopCars && <CarsContainer>     
+        {isLoading && <LoadingContainer>
+          <HashLoader loading color="#EF4444"/>
+          </LoadingContainer>}
+        {isEmptyTopCars && !isLoading &&  <EmptyCars>No car to show!</EmptyCars>}
+        {!isEmptyTopCars && !isLoading && <CarsContainer>     
           <Swiper
         centeredSlides={true} 
         slidesPerView={1}
