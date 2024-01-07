@@ -10,10 +10,11 @@ import 'swiper/css/navigation';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import carService from "../../services/carService";
-import { Dispatch } from "@reduxjs/toolkit";
+import { Dispatch, createSelector } from "@reduxjs/toolkit";
 import { GetCars_cars } from "../../services/carService/__generated__/GetCars";
 import { setTopCars} from "./slice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { makeSelectTopCars } from "./selectors";
 const TopCarsContainer = styled.div`
 ${tw`
 max-w-screen-lg
@@ -49,15 +50,27 @@ ${tw`
     md:mt-10 
 `}
 `
+const EmptyCars = styled.div`
+  ${tw`
+    w-full
+    flex
+    justify-center
+    items-center
+    text-sm
+    text-gray-500
+  `};
+`;
 
 const actionDispatch = (dispatch: Dispatch) => ({
   setTopCars: (cars: GetCars_cars[]) => dispatch(setTopCars(cars)),
 })
 
-
+const stateSelector = createSelector(makeSelectTopCars, (topCars) => ({
+  topCars 
+}))
 export function TopCars(){
   const {setTopCars} = actionDispatch(useDispatch())
-
+  const {topCars} = useSelector(stateSelector)
   //fetch cars from graphql calls
   const fetchCars = async () => {
     const cars = await carService.getCars().catch((err) => {
@@ -69,42 +82,53 @@ export function TopCars(){
   useEffect(() => {
     fetchCars()
   }, [])
-  const testCar: ICar = {
-    name: "Audi S3 Car",
-    mileage: "10k",
-    thumbnailSrc:
-    "https://cdn.jdpower.com/Models/640x480/2017-Audi-S3-PremiumPlus.jpg",
-    dailyPrice: 70,
-    monthlyPrice: 1600,
-    gearType: "Auto",
-    gas: "Petrol",
-  };
+  // const testCar: ICar = {
+  //   name: "Audi S3 Car",
+  //   mileage: "10k",
+  //   thumbnailSrc:
+  //   "https://cdn.jdpower.com/Models/640x480/2017-Audi-S3-PremiumPlus.jpg",
+  //   dailyPrice: 70,
+  //   monthlyPrice: 1600,
+  //   gearType: "Auto",
+  //   gas: "Petrol",
+  // };
   
-  const testCar2: ICar = {
-    name: "HONDA cITY 5 Seater Car",
-    mileage: "20k",
-    thumbnailSrc:
-    "https://shinewiki.com/wp-content/uploads/2019/11/honda-city.jpg",
-    dailyPrice: 50,
-    monthlyPrice: 1500,
-    gearType: "Auto",
-    gas: "Petrol",
-  };
-  const cars = [
-    <Car {...testCar} />,
-    <Car  {...testCar2} />,
-    <Car  {...testCar} />,
-    <Car  {...testCar2} />,
-    <Car {...testCar2} />,
-    <Car  {...testCar} />,
-  ];
+  // const testCar2: ICar = {
+  //   name: "HONDA cITY 5 Seater Car",
+  //   mileage: "20k",
+  //   thumbnailSrc:
+  //   "https://shinewiki.com/wp-content/uploads/2019/11/honda-city.jpg",
+  //   dailyPrice: 50,
+  //   monthlyPrice: 1500,
+  //   gearType: "Auto",
+  //   gas: "Petrol",
+  // };
+  // const cars = [
+  //   <Car {...testCar} />,
+  //   <Car  {...testCar2} />,
+  //   <Car  {...testCar} />,
+  //   <Car  {...testCar2} />,
+  //   <Car {...testCar2} />,
+  //   <Car  {...testCar} />,
+  // ];
+  
+  const isEmptyTopCars = !topCars || topCars.length === 0
+  let carSlides: JSX.Element[] = []; // Define carSlides before the if block
 
-  const carSlides = cars.map((car) => (
-    <SwiperSlide>{car}</SwiperSlide>
+if (!isEmptyTopCars) {
+  const cars = topCars;
+  carSlides = cars.map((car) => (
+    <SwiperSlide><Car {...car} /></SwiperSlide>
   ));
+}else{
+  return null;
+}
+
+  // const cars = !isEmptyTopCars && topCars.map((car)=> <Car{...car}/>)
   return <TopCarsContainer>
         <Title>Explore our top deals</Title>
-        <CarsContainer>     
+        {isEmptyTopCars && <EmptyCars>No car to show!</EmptyCars>}
+        {!isEmptyTopCars && <CarsContainer>     
           <Swiper
         centeredSlides={true} 
         slidesPerView={1}
@@ -131,6 +155,6 @@ export function TopCars(){
       >
         {carSlides}
       </Swiper>
-        </CarsContainer>
+        </CarsContainer>}
     </TopCarsContainer>
 }

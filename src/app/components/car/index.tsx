@@ -140,7 +140,7 @@ import {
   export function Car(props: ICarProps) {
     const {
       name,
-      thumbnailSrc,
+      thumbnailUrl,
       dailyPrice,
       monthlyPrice,
       mileage,
@@ -151,7 +151,7 @@ import {
     return (
       <CarContainer>
         <CarThumbnail>
-          <img src={thumbnailSrc} />
+          <img alt="thumbnail Url" src={thumbnailUrl} />
         </CarThumbnail>
         <CarName>{name}</CarName>
         <PricesContainer>
