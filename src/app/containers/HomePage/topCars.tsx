@@ -10,6 +10,10 @@ import 'swiper/css/navigation';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import carService from "../../services/carService";
+import { Dispatch } from "@reduxjs/toolkit";
+import { GetCars_cars } from "../../services/carService/__generated__/GetCars";
+import { setTopCars} from "./slice";
+import { useDispatch } from "react-redux";
 const TopCarsContainer = styled.div`
 ${tw`
 max-w-screen-lg
@@ -46,15 +50,21 @@ ${tw`
 `}
 `
 
-
+const actionDispatch = (dispatch: Dispatch) => ({
+  setTopCars: (cars: GetCars_cars[]) => dispatch(setTopCars(cars)),
+})
 
 
 export function TopCars(){
+  const {setTopCars} = actionDispatch(useDispatch())
+
+  //fetch cars from graphql calls
   const fetchCars = async () => {
     const cars = await carService.getCars().catch((err) => {
       console.log(err);
     });
     console.log("Cars", cars)
+    if(cars) setTopCars(cars)
   }
   useEffect(() => {
     fetchCars()
